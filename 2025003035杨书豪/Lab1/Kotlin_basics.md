@@ -3,7 +3,7 @@
 ## 实验背景
 
 本次实验涵盖 Kotlin 编程的基础语法，包括输出语句、变量、字符串操作、基本数学运算以及函数定义与调用。
-建议使用 [Kotlin Playground](https://play.kotlinlang.org/) 在线编写并运行代码，完成后将代码粘贴到对应代码块中提交。
+建议使用 [Kotlin Playground](https://play.kotlinlang.org/) 在线编写并运行代码，完成后将代码粘贴到对应代码块中提交
 
 ---
 
