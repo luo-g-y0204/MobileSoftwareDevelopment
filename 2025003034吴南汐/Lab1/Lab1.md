@@ -59,7 +59,11 @@ I'm learning Kotlin!
 **你的答案：**
 
 ```kotlin
-
+fun main() {
+    println("My name is wunanxi")
+    println("My student ID is 2025003034")
+    println("I'm learning Kotlin!")
+}
 ```
 
 ---
@@ -84,7 +88,9 @@ fun main() {
 **你的答案：**
 
 ```kotlin
-
+fun main() {
+    println("Student 2025003034 says hello")
+}
 ```
 
 ---
@@ -102,7 +108,9 @@ fun main() {
 **你的答案：**
 
 ```kotlin
-
+fun main() {
+    println("Hello, my name is wunanxi")
+}
 ```
 
 ---
@@ -126,7 +134,11 @@ Course: Kotlin
 **你的答案：**
 
 ```kotlin
-
+fun main() {
+    println("ID: 2025003034") 
+    println("Name: wunanxi") 
+    println("Course: Kotlin")
+}
 ```
 
 ---
@@ -144,7 +156,9 @@ fun main() (
 **你的答案：**
 
 ```kotlin
-
+fun main() {
+    println("My ID ends with 4")
+}
 ```
 
 ---
@@ -171,7 +185,10 @@ You have 42 unread messages.
 **你的答案：**
 
 ```kotlin
-
+fun main() {
+    val numberOfMessages = 34   
+    println("You have $numberOfMessages unread messages.")
+}
 ```
 
 ---
@@ -189,7 +206,10 @@ Package for zhangwei will arrive, tracking ID: 20231042.
 **你的答案：**
 
 ```kotlin
-// 请将完整代码粘贴至此
+fun main() {
+    val wunanxiDelivery = "2025003034"
+    println("Package for wunanxi will arrive, tracking ID: " + wunanxiDelivery + ".")
+}
 ```
 
 ---
@@ -288,7 +308,13 @@ Happy Birthday, zhangwei! You are now 4 years old!
 **你的答案：**
 
 ```kotlin
-// 请将完整代码粘贴至此
+fun main() {
+    println(wunanxiGreeting(age = 4))
+    println(wunanxiGreeting("wunanxi", 3))
+}
+fun wunanxiGreeting(name: String = "2025003034", age: Int): String {
+    return "Happy Birthday, $name! You are now $age years old!"
+}
 ```
 
 ---
@@ -322,7 +348,17 @@ Walking 4200 steps burns 168.0 calories
 **你的答案：**
 
 ```kotlin
-// 请将重命名后的完整代码粘贴至此
+fun main() {
+    val Steps = 34*100                                    
+    val caloriesBurned = PEDOMETERstepsTOcalories(Steps)
+    println("Walking $Steps steps burns $caloriesBurned calories")
+}
+
+fun PEDOMETERstepsTOcalories(NumberOFStepS: Int): Double {
+    val CaloriesBURNEDforEachStep = 0.04
+    val TotalCALORIESburned = NumberOFStepS * CaloriesBURNEDforEachStep
+    return TotalCALORIESburned
+}
 ```
 
 ---
@@ -350,7 +386,17 @@ fun main() {
 **你的答案：**
 
 ```kotlin
-// 请将完整代码粘贴至此
+fun main() {
+    val first = 30   
+    val second = 34   
+    if (first > second) {
+        println(first)
+    } else if (second > first) {
+        println(second)
+    } else {
+        println("First and second are equal.")
+    }
+}
 ```
 
 ---
@@ -390,7 +436,20 @@ fun main() {
 **你的答案：**
 
 ```kotlin
-// 请将完整代码粘贴至此
+fun main() {
+    printWunanxiWeather("Ankara", 27, 31, "82%")
+    printWunanxiWeather("Tokyo", 32, 36, "10%")
+    printWunanxiWeather("Cape Town", 59, 64, "2%")
+    printWunanxiWeather("Guatemala City", 50, 55, "7%")
+}
+
+// 封装天气信息输出的函数
+fun printWunanxiWeather(city: String, lowTemp: Int, highTemp: Int, rainChance: String) {
+    println("City: $city")
+    println("Low temperature: $lowTemp, High temperature: $highTemp")
+    println("Chance of rain: $rainChance")
+    println()
+}
 ```
 
 ---
