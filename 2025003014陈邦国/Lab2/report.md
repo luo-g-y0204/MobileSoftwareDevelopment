@@ -1,92 +1,58 @@
-\# Jetpack Compose 电子名片实验报告
-
-\- 姓名：陈邦国
-
-\- 学号：2025003014
-
-\- 开发环境：Android Studio + Kotlin + Jetpack Compose
-
-
-
-\## 一、名片展示的个人信息
-
-1\. 头像：Android Logo
-
-2\. 姓名：陈邦国
-
-3\. 职位：Android 开发工程师
-
-4\. 联系方式：2025003014
-
-5\. 社交账号：@chenbangguo
-
-6\. 邮箱：chenbangguo@school.com
-
-
-
-\## 二、布局结构说明
-
-本项目使用 Jetpack Compose 声明式 UI 构建界面，整体布局采用垂直容器与水平容器组合实现。
-
-
-
-\### 使用的 Composable 组件
-
-\- Column：垂直布局，用于整体页面、个人信息区、联系方式区
-
-\- Row：横向布局，用于实现“图标+文字”的联系方式行
-
-\- Image：展示头像图片
-
-\- Text：显示姓名、职位、联系方式等文本
-
-\- Icon：显示 Material 图标（电话、分享、邮件）
-
-\- Spacer：控制组件之间的间距
-
-\- Modifier：设置大小、边距、背景、对齐方式
-
-
-
-\### 布局层次
-
-1\. 最外层：Column 铺满屏幕，设置背景色
-
-2\. 上半部分 CardTop：Column 嵌套 Image + Text，展示头像、姓名、职位
-
-3\. 下半部分 CardBottom：Column 包含多个 ContactRow
-
-4\. 联系方式行 ContactRow：Row 横向排列 Icon + Text
-
-
-
-\## 三、遇到的问题与解决方法
-
-\### 问题1：Unresolved reference: drawable
-
-\- 原因：未正确导入项目 R 类，图片资源无法识别
-
-\- 解决：导入包名对应的 R 文件，将图片放入 drawable 目录，同步 Gradle
-
-
-
-\### 问题2：Material Icons 图标无法使用
-
-\- 原因：缺少图标导入语句
-
-\- 解决：添加 Icons.Default.Phone / Share / Email 相关导入
-
-
-
-\### 问题3：界面排版不居中、布局错乱
-
-\- 原因：未设置水平对齐与合理间距
-
-\- 解决：使用 horizontalAlignment 居中，配合 Spacer 和 padding 调整布局
-
-
-
-\## 四、实验总结
-
-本次实验完成了 Jetpack Compose 电子名片界面开发，掌握了 Column、Row、Image、Text、Icon、Modifier 等基础组件的使用，理解了声明式 UI 的构建方式，能够独立完成界面布局与常见错误处理。
-
+###Jetpack Compose 电子名片实验报告
+姓名：陈邦国
+学号：2025003014
+开发环境：Android Studio + Kotlin + Jetpack Compose
+###一、名片展示的个人信息
+本次电子名片实现展示的个人信息如下：
+头像 / Logo：自定义 Android 图标（anzhuo.png）
+姓名：陈邦国
+职位：Android Developer Extraordinaire
+联系方式：学号 2025003014
+社交账号：@chenbangguo
+邮箱：chenbangguo@school.com
+###二、布局结构简要说明
+整体采用 Jetpack Compose 声明式 UI 开发，通过可组合函数（Composable）构建界面，布局层次清晰、可复用性强。
+1. 核心 Composable 组件
+Column：垂直布局容器，用于整体页面、上半部分信息、下半部分联系方式的纵向排列
+Row：横向布局容器，用于实现「图标 + 文字」的联系方式行
+Image：加载并展示头像 / Logo 图片资源
+Text：展示姓名、职位、联系方式等文本信息
+Icon：渲染 Material Design 内置矢量图标（电话、分享、邮件）
+Spacer：用于精确控制组件之间的间距
+Modifier：修饰符，用于设置组件大小、内边距、背景色、填充方式、对齐方式等
+2. 布局嵌套结构
+最外层容器：Column 铺满全屏，设置浅绿背景，整体内容垂直居中、水平居中
+上半部分（CardTop）：Column 嵌套 Image + 两个 Text，依次展示头像、姓名、职位
+下半部分（CardBottom）：Column 嵌套三个 ContactRow 组件
+联系方式行（ContactRow）：Row 横向排列 Icon + Text，实现图标与对应文字的组合样式
+###三、遇到的问题与解决过程
+问题 1：Unresolved reference: drawable 资源找不到
+问题描述：代码中使用 R.drawable.anzhuo 时，编译器提示无法找到 drawable 资源
+问题原因：未正确导入当前项目的 R 类，包名不匹配导致资源引用失败
+解决方法：
+确认 anzhuo.png 已放置在 app/src/main/res/drawable 目录下，文件名大小写一致
+在 MainActivity.kt 顶部导入对应包名的 R 类：import com.example.demo3.R
+执行 File → Sync Project with Gradle Files 同步项目，使资源被正常识别
+问题 2：Material Icons 图标无法使用
+问题描述：Icons.Default.Phone、Icons.Default.Share 等图标代码报错，提示未定义
+问题原因：未导入 Material Icons 相关依赖包
+解决方法：
+在 MainActivity.kt 顶部添加图标导入语句：
+kotlin
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Email
+确认模块级 build.gradle 已包含 Compose Material 依赖：
+groovy
+implementation "androidx.compose.material:material:1.5.0"
+implementation "androidx.compose.material:material-icons-core:1.5.0"
+问题 3：界面排版错乱、组件位置偏移
+问题描述：头像、文字未居中显示，组件间距不均匀
+问题原因：未正确使用 Modifier 和对齐参数
+解决方法：
+给外层 Column 设置 horizontalAlignment = Alignment.CenterHorizontally 实现水平居中
+使用 Spacer 统一控制组件间间距，避免硬编码边距
+通过 Modifier.padding ()、Modifier.size () 精确控制组件大小与内边距
+###四、实验总结
+本次实验成功使用 Jetpack Compose 完成了个人电子名片的开发，掌握了 Compose 基础布局（Column/Row）、图片加载、文本展示、Material 图标、Modifier 修饰符的使用方法，理解了声明式 UI 的开发思路，能够独立完成界面搭建与常见编译错误排查，为后续 Compose 复杂界面开发奠定了基础。
