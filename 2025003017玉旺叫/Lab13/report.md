@@ -1,44 +1,42 @@
-# Lab13 网络书架 Bookshelf 实验报告
+# Lab13 Bookshelf 网络图片书架实验报告
+
 ## 一、实验目的
-练习 Retrofit、Gson、Coil、Repository分层、ViewModel状态管理、Compose网格布局，使用Apifox Mock接口完成图片书架项目，掌握MVVM架构与数据源解耦。
+1. 掌握Retrofit网络框架发送GET请求，完成JSON解析以及DTO数据转为业务实体。
+2. 熟悉分层开发架构：Model、Network、Repository、ViewModel、Compose UI五层架构，实现代码解耦。
+3. 学会Coil框架在Compose中异步加载网络图片。
+4. 使用ViewModel搭配StateFlow管理页面三种状态：加载中、加载成功、加载失败。
+5. 完成网格列表布局与点击弹窗查看详情功能，熟练使用Material3的AlertDialog弹窗控件。
 
-## 二、选用Apifox Mock接口原因
-1. **省去后端部署**：无需自己编写后端接口，快速提供固定JSON测试数据，专注Android客户端代码编写。
-2. **数据稳定统一**：接口数据固定不变，全班使用同一个地址，避免接口改动导致项目运行异常，方便实验调试。
-3. **支持HTTPS**：原生https地址，不用配置明文网络许可配置，简化AndroidManifest配置。
-4. **方便异常测试**：断开网络即可快速测试离线兜底数据源逻辑。
+## 二、实验环境
+Android Studio：Hedgehog；编译SDK：Android14 API36；最低SDK：API24；开发语言：Kotlin+Jetpack Compose；第三方依赖：Retrofit、Gson、Coil、ViewModel-Compose；运行设备：安卓模拟器。
 
-## 三、Retrofit服务接口定义说明
-1. 定义BASE_URL：`https://m1.apifoxmock.com/m1/8321477-8085280-default/`，接口端点`photos`。
-2. 使用`@GET("photos")`注解，配合suspend挂起函数，依托协程在子线程执行网络请求，避免主线程阻塞。
-3. 返回`Response<List<BookDto>>`，通过`.body()`拿到返回的JSON数组数据。
-4. Retrofit单例通过lazy懒加载创建，全局只实例化一次，节省资源。
+## 三、实验原理
+本项目采用分层架构设计，Model层分为DTO原始数据类和业务实体类，通过扩展函数完成数据转换；Network层借助Retrofit配置接口地址与请求方法，实现网络数据获取；Repository仓库层统一管理数据来源，优先使用网络数据，网络异常自动切换本地离线数据；ViewModel层持有仓库对象，依靠viewModelScope开启协程发起网络请求，通过StateFlow保存页面UI状态和弹窗选中数据；UI层使用Compose声明式布局，LazyVerticalGrid实现自适应图片网格，collectAsStateWithLifecycle监听数据变化自动刷新页面，点击图片唤起详情弹窗。
 
-## 四、Repository分层设计与数据源隔离
-1. 定义顶层抽象接口`BooksRepository`，规范`getBooks()、getBook()`方法，ViewModel只依赖接口，不直接耦合Retrofit网络代码。
-2. `NetworkBooksRepository`：实现在线数据源，调用Retrofit接口获取网络DTO，并在仓库层完成`BookDto→Book`领域模型转换，隔离网络数据结构。
-3. `OfflineBooksRepository`：离线本地假数据源，断网异常时自动兜底，保证应用不会崩溃白屏。
-4. AppContainer统一管理所有依赖（Api、Repository），配合Application实现全局依赖注入，方便切换在线/离线数据源。
+## 四、实验步骤
+1. 项目依赖与权限配置：在app模块build.gradle文件添加Retrofit、Gson、Coil、ViewModel相关依赖；在AndroidManifest.xml中添加网络访问权限<uses-permission android:name="android.permission.INTERNET"/>。
+2. 新建model包，创建BookDto接收接口原始数据、Book作为业务实体，编写扩展函数asExternalModel实现DTO转Book。
+3. 新建network包，ApiConfig存放接口基地址，BookshelfApiService定义挂起函数getBooks请求接口，通过Retrofit构建实例生成接口对象。
+4. 新建data包，创建BooksRepository接口，分别实现网络数据源类NetworkBooksRepository和离线本地数据源OfflineBooksRepository，AppContainer用来全局统一提供仓库实例，自定义Application类保存容器对象。
+5. 新建ui包，BookshelfViewModel中使用密封类定义页面UI状态，借助StateFlow存储页面状态和弹窗状态，初始化自动调用方法加载网络数据，提供打开、关闭详情弹窗的方法。
+6. 编写Compose页面，LazyVerticalGrid实现自适应多列图片网格，AsyncImage加载网络图片，点击图片弹出AlertDialog弹窗展示大图，MainActivity启动Compose页面。
 
-## 五、UI三种状态切换逻辑（Loading/Success/Error）
-项目采用密封接口`BookshelfUiState`管理页面状态：
-1. **Loading状态**：调用加载方法时，立刻赋值为Loading，页面展示圆形加载动画。
-2. **Success状态**：网络请求正常获取数据后，切换Success并携带图书列表，Compose渲染`LazyVerticalGrid`图片网格。
-3. **异常兜底**：网络请求捕获Exception后，不进入Error页面，自动加载离线Repository本地数据，保证页面正常展示；原始Error页面预留，可用于手动异常重试。
-4. 点击Item修改selectedBook，唤起AlertDialog详情弹窗，关闭弹窗置空选中对象。
+## 五、关键代码说明
+1. 数据转换：利用扩展函数把接口返回的BookDto转为页面使用的Book实体，隔离接口字段改动对页面的影响。
+2. 网络请求：使用suspend挂起函数配合协程进行网络请求，不会阻塞主线程。
+3. 仓库容错：Repository内部捕获网络异常，断网时自动返回预设本地数据，保证程序不会崩溃。
+4. 状态管理：密封类区分Loading、Success、Error三种页面状态，StateFlow实现数据单向流转，页面自动跟随数据刷新。
+5. 网格与弹窗：自适应网格根据屏幕宽度自动调整列数，AlertDialog依靠选中的Book对象控制弹窗显示与关闭，符合Compose状态驱动UI思想。
 
-## 六、程序运行效果
-1. **联网状态**：成功请求Apifox远程JSON，Coil的AsyncImage加载在线图片，网格展示所有图书封面，单击图片弹出详情大图弹窗。
-2. **断网状态**：捕获网络异常，自动读取Offline本地mock数据，页面正常渲染本地图片，无闪退空白。
-3. 页面包含顶部标题栏、加载指示器、错误重试按钮、图片网格、详情弹窗五大模块。
+## 六、实验结果
+运行APP后，首页先出现加载转圈动画，请求接口成功后页面以自适应网格展示全部网络图片；点击任意一张图片弹出详情弹窗，弹窗内展示原图，点击关闭按钮弹窗消失；断开网络后程序自动加载本地测试图片，功能全部实现。运行截图保存为screenshot.png一并上交。
 
-## 七、实验问题与解决方案
-1. **JSON字段img_src带下划线，与kotlin命名冲突**
-    解决：DTO中使用`@SerializedName("img_src")`注解做字段映射。
-2. **无网络环境请求崩溃**
-    解决：try-catch捕获异常，异常分支自动切换离线仓库数据源。
-3. **图片加载错乱**
-    解决：使用Coil AsyncImage替代原生Image，自动处理图片缓存与异步加载。
+## 七、问题与解决
+1. AlertDialog出现重载参数报错：统一导入material3包下弹窗，严格按照onDismissRequest、title、text、confirmButton顺序填写具名参数，解决重载冲突。
+2. 页面组件提示未使用：在MainActivity的setContent代码块中正常调用页面Compose函数，消除未引用警告。
+3. 图片无法加载：核对AndroidManifest添加INTERNET网络权限，检查接口地址与图片链接无误后图片正常加载。
+4. 页面生命周期异常：使用collectAsStateWithLifecycle替代普通collectAsState，避免页面销毁后无效数据监听。
 
 ## 八、实验总结
-通过本次实验掌握了分层架构：网络层→数据仓库层→ViewModel层→Compose UI层，实现数据源与视图解耦，理解Mock接口在开发调试中的作用，熟练使用Retrofit网络请求、Coil远程图片加载、密封类管理UI多状态。
+本次实验完成书架图片浏览项目，熟练掌握MVVM分层架构、Retrofit网络请求、Coil图片加载、Compose状态管理等知识点。分层架构把数据、网络、页面代码拆分，降低模块之间耦合，便于后期维护。编写过程中解决弹窗报错、图片加载失败等问题，加深了对协程异步、StateFlow响应式编程的理解。通过本次实验，能够独立完成从接口请求到页面渲染的完整安卓Compose项目开发，夯实了安卓网络开发基础。
+

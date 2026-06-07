@@ -3,17 +3,9 @@ package com.example.bookshelf.model
 data class Book(
     val id: String,
     val coverUrl: String,
-    val title: String,
-    val author: String = "",
-    val description: String = ""
-) {
-    // 获取封面图片URL
-    fun getCoverImageUrl(): String {
-        return coverUrl
-    }
+    val title: String = "Book $id"
+)
 
-    // 获取书籍标题
-    fun getBookTitle(): String {
-        return title
-    }
+fun BookDto.asExternalModel(): Book {
+    return Book(id, imgSrc)
 }
