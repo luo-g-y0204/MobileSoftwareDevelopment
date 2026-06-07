@@ -10,97 +10,58 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.io.IOException
 
-/**
- * UI 状态：加载中、加载成功、加载失败
- */
 sealed interface BookshelfUiState {
     data object Loading : BookshelfUiState
-
-    data class Success(
-        val books: List<Book>,
-        val selectedBook: Book? = null,
-    ) : BookshelfUiState
-
-    data class Error(
-        val message: String,
-    ) : BookshelfUiState
+    data class Success(val books: List<Book>, val selected: Book?) : BookshelfUiState
+    data class Error(val msg: String) : BookshelfUiState
 }
 
-/**
- * ViewModel：管理书架数据与 UI 状态
- */
 class BookshelfViewModel(
-    private val booksRepository: BooksRepository,
+    private val repo: BooksRepository
 ) : ViewModel() {
-
     private val _uiState = MutableStateFlow<BookshelfUiState>(BookshelfUiState.Loading)
     val uiState: StateFlow<BookshelfUiState> = _uiState.asStateFlow()
 
     init {
-        getBooks()
+        reload()
     }
 
-    /**
-     * 从 Repository 获取书籍列表
-     */
-    fun getBooks() {
+    fun reload() {
+        _uiState.value = BookshelfUiState.Loading
         viewModelScope.launch {
-            _uiState.value = BookshelfUiState.Loading
             try {
-                val books = booksRepository.getBooks()
-                _uiState.value = BookshelfUiState.Success(books = books)
-            } catch (e: IOException) {
-                _uiState.value = BookshelfUiState.Error(
-                    message = "网络请求失败：${e.message}"
-                )
+                val list = repo.getBooks()
+                _uiState.value = BookshelfUiState.Success(list, null)
             } catch (e: Exception) {
-                _uiState.value = BookshelfUiState.Error(
-                    message = "加载失败：${e.message}"
-                )
+                _uiState.value = BookshelfUiState.Error("加载失败：${e.message}")
             }
         }
     }
 
-    /**
-     * 点按条目时显示详情
-     */
     fun selectBook(book: Book) {
-        _uiState.update { currentState ->
-            if (currentState is BookshelfUiState.Success) {
-                currentState.copy(selectedBook = book)
-            } else {
-                currentState
-            }
+        _uiState.update { state ->
+            if (state is BookshelfUiState.Success) state.copy(selected = book) else state
         }
     }
 
-    /**
-     * 关闭详情弹窗
-     */
-    fun dismissDetail() {
-        _uiState.update { currentState ->
-            if (currentState is BookshelfUiState.Success) {
-                currentState.copy(selectedBook = null)
-            } else {
-                currentState
-            }
+    fun closeDetail() {
+        _uiState.update { state ->
+            if (state is BookshelfUiState.Success) state.copy(selected = null) else state
         }
     }
-}
 
-/**
- * ViewModel 工厂，用于注入 Repository
- */
-class BookshelfViewModelFactory(
-    private val booksRepository: BooksRepository,
-) : ViewModelProvider.Factory {
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(BookshelfViewModel::class.java)) {
-            return BookshelfViewModel(booksRepository) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
+    companion object {
+        // 正确实现 ViewModelProvider.Factory 接口
+        fun factory(repo: BooksRepository): ViewModelProvider.Factory =
+            object : ViewModelProvider.Factory {
+                @Suppress("UNCHECKED_CAST")
+                override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                    if (modelClass.isAssignableFrom(BookshelfViewModel::class.java)) {
+                        return BookshelfViewModel(repo) as T
+                    }
+                    throw IllegalArgumentException("Unknown ViewModel class")
+                }
+            }
     }
 }
