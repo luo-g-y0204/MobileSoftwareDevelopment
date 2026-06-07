@@ -15,4 +15,4 @@ fun BookDto.asExternalModel(): Book {
         title = "Book #$id",
         coverUrl = imgSrc
     )
-}
+}   

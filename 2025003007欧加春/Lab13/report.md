@@ -38,13 +38,13 @@ Retrofit 的基础地址为：
 ```text
 https://m1.apifoxmock.com/m1/8321477-8085280-default/
 ```
-
+     
 接口路径为：
 
 ```text
 photos
-```
-
+```   
+      
 二者组合后，应用最终请求的地址就是 Apifox Mock 提供的图片数据接口。
 
 ### 2. Gson 数据解析
@@ -69,7 +69,7 @@ Repository 的作用是隔离数据来源，让 ViewModel 不直接依赖 Retrof
 本实验通过 `AppContainer` 集中创建 Retrofit、API service 和 Repository。`BookshelfApplication` 在应用启动时创建 `AppContainer`，ViewModel 再从 Application 中获取 Repository。
 
 这种方式可以避免在多个地方重复创建 Retrofit，也让项目结构更加清晰。
-
+      
 ### 5. ViewModel 与 UI 状态
 
 ViewModel 负责加载数据并维护 UI 状态。本实验设计了三种状态：
@@ -82,7 +82,7 @@ ViewModel 负责加载数据并维护 UI 状态。本实验设计了三种状态
 
 同时，ViewModel 还负责处理点击条目和关闭详情弹窗。当用户点击某一本书时，ViewModel 会记录当前选中的 `Book`，界面根据该数据弹出详情对话框。
 
-### 6. Compose UI 界面
+### 6. Compose UI 界面   
 
 界面层使用 Jetpack Compose 实现，主要包括：
 
@@ -91,19 +91,19 @@ ViewModel 负责加载数据并维护 UI 状态。本实验设计了三种状态
 - 错误提示和重试按钮；
 - `LazyVerticalGrid` 图片网格；
 - 每个书籍条目的 Card；
-- 点击条目后显示详情弹窗。
+- 点击条目后显示详情弹窗。  
 
 图片加载使用 Coil 的 `AsyncImage` 组件，将 `Book` 中的 `coverUrl` 传入 `model` 参数，从而加载远程图片。
 
 ## 五、实验步骤
 
-### 1. 创建项目
+### 1. 创建项目  
 
 首先在 Android Studio 中创建 Empty Activity 项目，项目包名设置为：
 
 ```text
 com.example.bookshelf
-```
+```    
 
 ### 2. 添加依赖
 
@@ -123,11 +123,11 @@ implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
 
 在 `AndroidManifest.xml` 中添加网络权限：
 
-```xml
+```xml        
 <uses-permission android:name="android.permission.INTERNET" />
 ```
 
-如果不添加该权限，应用无法正常访问网络接口，也无法加载远程图片。
+如果不添加该权限，应用无法正常访问网络接口，也无法加载远程图片。     
 
 ### 4. 创建数据模型
 

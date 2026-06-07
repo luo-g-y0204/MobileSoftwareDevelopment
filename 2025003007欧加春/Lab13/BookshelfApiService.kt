@@ -4,6 +4,7 @@ import com.example.bookshelf.model.BookDto
 import retrofit2.http.GET
 
 interface BookshelfApiService {
+
     @GET("photos")
-    suspend fun getPhotos(): List<BookDto>
-}
+    suspend fun getBooks(): List<BookDto>
+}  

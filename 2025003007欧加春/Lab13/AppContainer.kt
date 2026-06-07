@@ -23,4 +23,4 @@ class DefaultAppContainer : AppContainer {
     override val booksRepository: BooksRepository by lazy {
         NetworkBooksRepository(retrofitService)
     }
-}
+}  
