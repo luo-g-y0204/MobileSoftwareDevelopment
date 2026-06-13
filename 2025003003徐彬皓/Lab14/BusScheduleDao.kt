@@ -12,3 +12,4 @@ interface BusScheduleDao {
     @Query("SELECT * FROM Schedule WHERE stop_name = :stopName ORDER BY arrival_time ASC")
     fun getByStopName(stopName: String): Flow<List<BusSchedule>>
 }
+

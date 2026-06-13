@@ -16,7 +16,7 @@ abstract class BusScheduleDatabase : RoomDatabase() {
         fun getDatabase(context: Context): BusScheduleDatabase {
             return Instance ?: synchronized(this) {
                 Room.databaseBuilder(
-                    context,
+                    context.applicationContext,
                     BusScheduleDatabase::class.java,
                     "bus_schedule_database"
                 )
@@ -27,3 +27,4 @@ abstract class BusScheduleDatabase : RoomDatabase() {
         }
     }
 }
+
