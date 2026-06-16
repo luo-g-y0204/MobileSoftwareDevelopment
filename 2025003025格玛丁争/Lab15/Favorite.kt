@@ -1,12 +1,16 @@
-package com.example.flightsearch
+package com.example.flightsearch.data.local
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
+/** favorite 表对应的实体。 */
 @Entity(tableName = "favorite")
 data class Favorite(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    val departure_code: String,
-    val destination_code: String
+    @ColumnInfo(name = "departure_code")
+    val departureCode: String,
+    @ColumnInfo(name = "destination_code")
+    val destinationCode: String,
 )

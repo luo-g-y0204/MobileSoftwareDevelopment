@@ -1,47 +1,40 @@
-package com.example.flightsearch
+package com.example.flightsearch.data
 
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
-import androidx.datastore.preferences.core.edit
+import java.io.IOException
 
-class UserPreferencesRepository(context: Context) {
-    private val dataStore = context.dataStore
+val Context.flightSearchDataStore: DataStore<Preferences> by preferencesDataStore(
+    name = "flight_search_preferences"
+)
 
-    private object PreferencesKeys {
-        val LAST_SEARCH_QUERY = stringPreferencesKey("last_search_query")
-        val SELECTED_AIRPORT = stringPreferencesKey("selected_airport")
+class UserPreferencesRepository(
+    private val dataStore: DataStore<Preferences>,
+) {
+    private companion object {
+        val SEARCH_TEXT = stringPreferencesKey("search_text")
     }
 
-    val lastSearchQuery: Flow<String> = dataStore.data
-        .map { preferences ->
-            preferences[PreferencesKeys.LAST_SEARCH_QUERY] ?: ""
+    val searchTextFlow: Flow<String> = dataStore.data
+        .catch { exception ->
+            if (exception is IOException) {
+                emit(androidx.datastore.preferences.core.emptyPreferences())
+            } else {
+                throw exception
+            }
         }
+        .map { preferences -> preferences[SEARCH_TEXT].orEmpty() }
 
-    val selectedAirport: Flow<String> = dataStore.data
-        .map { preferences ->
-            preferences[PreferencesKeys.SELECTED_AIRPORT] ?: ""
-        }
-
-    suspend fun saveLastSearchQuery(query: String) {
+    suspend fun saveSearchText(text: String) {
         dataStore.edit { preferences ->
-            preferences[PreferencesKeys.LAST_SEARCH_QUERY] = query
-        }
-    }
-
-    suspend fun saveSelectedAirport(airportCode: String) {
-        dataStore.edit { preferences ->
-            preferences[PreferencesKeys.SELECTED_AIRPORT] = airportCode
-        }
-    }
-
-    suspend fun clearPreferences() {
-        dataStore.edit { preferences ->
-            preferences.clear()
+            preferences[SEARCH_TEXT] = text
         }
     }
 }
