@@ -1,6 +1,6 @@
 # 馋趣食谱 (Yummy Recipes) - 食谱管理应用
 
-GitHub 仓库地址：https://github.com/zhu-s-112/MobileSoftwareDevelopment.git
+GitHub 仓库地址：https://github.com/zhu-s-112/2025003039-final-project
 
 ## 1. 项目简介
 
@@ -316,7 +316,7 @@ AI 主要用于哪些环节：
   - `android.permission.INTERNET` - 网络访问（用于 API 请求和图片加载）
   - `android.permission.ACCESS_NETWORK_STATE` - 网络状态检测
 - **运行步骤**：
-  1. 克隆仓库：`git clone https://github.com/zhu-s-112/MobileSoftwareDevelopment.git`
+  1. 克隆仓库：`git clone https://github.com/zhu-s-112/2025003039-final-project`
   2. 使用 Android Studio Hedgehog (2023.1.1) 或更新版本打开项目
   3. 等待 Gradle 同步完成（需要下载 Compose BOM 2024.04.00 及 Kotlin 1.9.22 相关依赖）
   4. 连接模拟器或真机（API 26+），点击 Run
