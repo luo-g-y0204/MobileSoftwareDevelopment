@@ -1,5 +1,5 @@
 # 自习室预约管理App 项目报告
-GitHub 仓库地址：https://github.com/CMYKY/MobileSoftwareDevelopment
+GitHub 仓库地址：https://github.com/CMYKY/2025003011-Final-project
 
 ## 1. 项目简介
 - 应用名称：自习室预约管理
